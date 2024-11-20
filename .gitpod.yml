@@ -1,0 +1,47 @@
+image: temporalio/gitpod-edu:1.3
+tasks:
+   
+    # task starts the Temporal Service via the CLI
+  - name: Temporal Local Development Server
+    command: |
+      export TEMPORAL_NOTIFY_ON_NEW_VERSION=false
+      export TEMPORAL_CORS_ORIGINS=http://localhost:3000
+      temporal server start-dev \
+        --ui-port 8080 \
+        --db-filename /workspace/.cluster-persistence.db
+    openMode: tab-after
+  - name: Display Web UI
+    command: |
+      echo "Waiting for server...."
+      gp ports await 8080 && gp preview $(gp url 8080)
+      exit;
+ 
+ports:
+  - name: Temporal server
+    port: 7233
+    onOpen: ignore
+  - name: Temporal Web UI
+    port: 8080 # custom port, as per --ui-port option above
+    description: Temporal Web UI
+    onOpen: ignore
+    visibility: private
+  - name: Greeting Service
+    description: Local microservice used in exercises
+    port: 9999
+    onOpen: ignore
+    visibility: private
+
+vscode:
+  extensions:
+    - golang.Go
+    - ms-python.python
+    - ms-python.debugpy
+    - redhat.java
+    - vscjava.vscode-java-test
+    - vscjava.vscode-java-debug
+    - wingrunr21.vscode-ruby
+    - ms-toolsai.jupyter
+    - ms-toolsai.jupyter-keymap
+    - ms-toolsai.jupyter-renderers
+    - ms-toolsai.vscode-jupyter-cell-tags
+    - ms-toolsai.vscode-jupyter-slideshow
